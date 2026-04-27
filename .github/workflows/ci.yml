@@ -29,6 +29,7 @@ jobs:
         with:
           name: validation-${{ matrix.os }}
           path: |
+            .build/*_summary.pdf
             .build/*_hists.root
             .build/*_tree.root
             .build/plots/*.pdf

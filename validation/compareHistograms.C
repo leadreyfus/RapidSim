@@ -18,8 +18,10 @@ int compareHistograms(TString mode) {
 		return 1;
 	}
 
-	// Open a multi-page PDF that aggregates every per-histogram comparison for this mode
-	TString summaryPdf = "plots/" + mode + "_summary.pdf";
+	// Open a multi-page PDF that aggregates every per-histogram comparison for
+	// this mode. Written next to the run outputs (not under plots/) so it is
+	// easy to find at the top of the CI artifact.
+	TString summaryPdf = mode + "_summary.pdf";
 	c1.Print(summaryPdf + "[");
 
 	TIter next(f1->GetListOfKeys());
@@ -64,9 +66,17 @@ int compareHistograms(TString mode) {
 		++sum;
 
 		h1->SetTitle(TString::Format("%s   p = %g", h1->GetName(), pval));
-		h1->Draw();
+		h1->SetLineColor(kBlack);
 		h2->SetLineColor(kRed);
+		h1->Draw();
 		h2->Draw("same");
+
+		TLegend leg(0.65, 0.78, 0.88, 0.88);
+		leg.SetBorderSize(0);
+		leg.SetFillStyle(0);
+		leg.AddEntry(h1, "reference", "l");
+		leg.AddEntry(h2, "this build", "l");
+		leg.Draw();
 
 		// Append a page to the multi-page summary PDF
 		c1.Print(summaryPdf);
