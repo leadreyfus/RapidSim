@@ -142,22 +142,18 @@ description = "Validate Lb2chicpK decay (10k events)"
 depends-on = ["build"]
 
 [tasks.test]
-description = "Build and run the full validation suite"
+description = "Run the full validation suite (continues past per-mode failures)"
 # `run-D02Kpi-redecay` is intentionally not part of the default suite: with
 # modern ROOT it produces distributions that diverge from the reference for
-# broad observables (D0_P, D0_PT) — the reference was generated with an older
-# ROOT and the redecay path is sensitive to RNG-state evolution. The task
-# itself is still defined so it can be run manually.
-depends-on = [
-    "run-B2Kee",
-    "run-B2Kee-tree",
-    "run-Bs2Jpsiphi",
-    "run-Bd2D0rho0",
-    "run-Bs2D0Kpi",
-    "run-D02Kpi",
-    "run-B2DplusD0",
-    "run-Lb2chicpK",
-]
+# broad observables (D0_P, D0_PT). The task itself is still defined so it can
+# be run manually.
+#
+# Each per-mode task is run in sequence, continuing past individual failures
+# so every mode produces its own plots/<mode>_summary.pdf. The final exit code
+# is non-zero if any mode failed. We shell out to bash because the pixi shell
+# (deno-task-shell) doesn't support `for` loops or arrays.
+cmd = "bash -c 'status=0; for t in run-B2Kee run-B2Kee-tree run-Bs2Jpsiphi run-Bd2D0rho0 run-Bs2D0Kpi run-D02Kpi run-B2DplusD0 run-Lb2chicpK; do pixi run \"$t\" || status=1; done; exit $status'"
+depends-on = ["build"]
 
 # ---------------------------------------------------------------------------
 # pkg environment: consume the built conda package
