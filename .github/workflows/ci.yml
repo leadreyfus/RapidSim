@@ -32,6 +32,7 @@ jobs:
             .build/*_hists.root
             .build/*_tree.root
             .build/plots/*.pdf
+          include-hidden-files: true
           if-no-files-found: ignore
 
   build-pkg:
