@@ -130,15 +130,15 @@ description = "Validate D02Kpi with 9 redecays per parent (10k events)"
 depends-on = ["build"]
 
 [tasks.run-B2DplusD0]
-cmd = '''mkdir -p plots && src/RapidSim.exe ../validation/B2DplusD0 10000 && root -b -q -l '../validation/compareHistograms.C("B2DplusD0")' '''
+cmd = '''mkdir -p plots && src/RapidSim.exe ../validation/B2DplusD0 100000 && root -b -q -l '../validation/compareHistograms.C("B2DplusD0")' '''
 cwd = ".build"
-description = "Validate B2DplusD0 decay (10k events)"
+description = "Validate B2DplusD0 decay (100k events)"
 depends-on = ["build"]
 
 [tasks.run-Lb2chicpK]
-cmd = '''mkdir -p plots && src/RapidSim.exe ../validation/Lb2chicpK 10000 && root -b -q -l '../validation/compareHistograms.C("Lb2chicpK")' '''
+cmd = '''mkdir -p plots && src/RapidSim.exe ../validation/Lb2chicpK 100000 && root -b -q -l '../validation/compareHistograms.C("Lb2chicpK")' '''
 cwd = ".build"
-description = "Validate Lb2chicpK decay (10k events)"
+description = "Validate Lb2chicpK decay (100k events)"
 depends-on = ["build"]
 
 [tasks.test]
