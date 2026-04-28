@@ -67,11 +67,30 @@ int compareHistograms(TString mode) {
 
 		h1->SetTitle(TString::Format("%s   p = %g", h1->GetName(), pval));
 		h1->SetLineColor(kBlack);
+		h1->SetStats(true);
 		h2->SetLineColor(kRed);
+		h2->SetStats(true);
 		h1->Draw();
-		h2->Draw("same");
+		// "sames" (with the trailing 's') tells ROOT to also draw h2's stats
+		// box; without it the new build's stats would be suppressed.
+		h2->Draw("sames");
 
-		TLegend leg(0.65, 0.78, 0.88, 0.88);
+		// Force the canvas to actually create both stats objects, then colour
+		// them and shift the new build's box down so it doesn't overlap.
+		c1.Update();
+		TPaveStats *st1 = (TPaveStats*)h1->FindObject("stats");
+		TPaveStats *st2 = (TPaveStats*)h2->FindObject("stats");
+		if(st1) { st1->SetTextColor(kBlack); }
+		if(st2) {
+			st2->SetTextColor(kRed);
+			double y1 = st2->GetY1NDC();
+			double y2 = st2->GetY2NDC();
+			double dy = y2 - y1;
+			st2->SetY1NDC(y1 - dy);
+			st2->SetY2NDC(y2 - dy);
+		}
+
+		TLegend leg(0.65, 0.50, 0.88, 0.60);
 		leg.SetBorderSize(0);
 		leg.SetFillStyle(0);
 		leg.AddEntry(h1, "reference", "l");

@@ -152,7 +152,7 @@ description = "Run the full validation suite (continues past per-mode failures)"
 # so every mode produces its own plots/<mode>_summary.pdf. The final exit code
 # is non-zero if any mode failed. We shell out to bash because the pixi shell
 # (deno-task-shell) doesn't support `for` loops or arrays.
-cmd = "bash -c 'status=0; for t in run-B2Kee run-B2Kee-tree run-Bs2Jpsiphi run-Bd2D0rho0 run-Bs2D0Kpi run-D02Kpi run-B2DplusD0 run-Lb2chicpK; do pixi run \"$t\" || status=1; done; exit $status'"
+cmd = "bash -c 'status=0; for t in run-B2Kee-tree run-B2Kee run-Bs2Jpsiphi run-Bd2D0rho0 run-Bs2D0Kpi run-D02Kpi run-B2DplusD0 run-Lb2chicpK; do pixi run \"$t\" || status=1; done; exit $status'"
 depends-on = ["build"]
 
 # ---------------------------------------------------------------------------
