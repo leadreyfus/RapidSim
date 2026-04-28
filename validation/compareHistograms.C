@@ -51,7 +51,24 @@ int compareHistograms(TString mode) {
 		}
 
 
-		double pval = h1->Chi2Test(h2,"UU");
+		// Chi2Test "UU" produces a spurious p=0 when both histograms have all
+		// their entries in a single bin (e.g. truth-level vertex coordinates
+		// that are always (0,0,0) for the parent). For these degenerate cases
+		// we fall back to a direct bin-content comparison.
+		int nNonEmpty = 0;
+		for (int b = 1; b <= h1->GetNbinsX(); ++b) {
+			if (h1->GetBinContent(b) != 0 || h2->GetBinContent(b) != 0) ++nNonEmpty;
+		}
+		double pval;
+		if (nNonEmpty < 2) {
+			bool identical = true;
+			for (int b = 0; b <= h1->GetNbinsX()+1; ++b) {
+				if (h1->GetBinContent(b) != h2->GetBinContent(b)) { identical = false; break; }
+			}
+			pval = identical ? 1.0 : 0.0;
+		} else {
+			pval = h1->Chi2Test(h2,"UU");
+		}
 		std::cout << "INFO in compareHistograms : " << h1->GetName() << " :\tp-value = " << pval << std::endl;
 		if(pval < warnThreshold) {
 			std::cout << "WARNING in compareHistograms : Histograms do not match for " << h1->GetName() << " (p < 1%)" << std::endl;
