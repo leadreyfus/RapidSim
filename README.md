@@ -14,50 +14,38 @@ A more detailed description can be found here https://arxiv.org/abs/1612.07489
 
 ## Setup
 
-RapidSim relies on having a working ROOT installation and gcc4.9 or clang.
-Optionally, you may also compile against EvtGen as detailed in [EvtGen](#evtgen)
-To build do the following, where "<install location>" should be the full path, up to and including the "RapidSim" folder, created by the git clone command:
+RapidSim is built with [pixi], which provides ROOT, EvtGen and the necessary
+compilers in a self-contained environment on Linux and macOS:
 
 ```shell
-$ # Set environment for gcc, it defines LD_LIBRARY_PATH and FC, CC, CXX. RapidSim also works with clang.
-$ # On lxplus do this:
-$ source /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh
-$ # Set ROOT environment 
-$ source /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_87/ROOT/6.08.02/x86_64-slc6-gcc49-opt/bin/thisroot.sh
-$ mkdir build
-$ cd build 
-$ cmake ../ -DCMAKE_INSTALL_PREFIX=<install location>
-$ make -j4
-$ make -j4 install # This step is optional if you want to install in a specific location
+$ # Install pixi: https://pixi.sh/latest/installation
+$ pixi run build
 ```
 
-The usage is:
+To run a decay (validation files live in the source tree):
 
 ```shell
-$ # Setup the RAPIDSIM_ROOT environment variable (or add to .bashrc)
-$ export RAPIDSIM_ROOT=<install location>
-$ # Optionally setup the RAPIDSIM_CONFIG environment variable
-$ export RAPIDSIM_CONFIG=/path/to/additional/configuration/files
-$ $RAPIDSIM_ROOT/build/src/RapidSim.exe <decay mode> <events to generate> <save tree?> <num times to re-decay each hadron>
+$ pixi run -- .build/src/RapidSim.exe validation/Bs2Jpsiphi 10000 1
 ```
 
-To run an example try:
+For an interactive shell with ROOT, EvtGen and the compiler toolchain on the
+PATH:
 
 ```shell
-$ $RAPIDSIM_ROOT/build/src/RapidSim.exe $RAPIDSIM_ROOT/validation/Bs2Jpsiphi 10000 1
+$ pixi shell
 ```
 
-or
+To run the full validation suite:
 
 ```shell
-$ $RAPIDSIM_ROOT/bin/RapidSim.exe $RAPIDSIM_ROOT/validation/Bs2Jpsiphi 10000 1
+$ pixi run test
 ```
 
-To run the full system validation:
+Optionally set `RAPIDSIM_CONFIG` to a directory containing additional
+configuration files (smearing, PID, FONLL, particles); this is searched in
+addition to the in-tree `config/` and `rootfiles/` directories.
 
-```shell
-$ source $RAPIDSIM_ROOT/bin/runValidation.sh
-```
+[pixi]: https://pixi.sh
 
 ## Decays
 
@@ -302,12 +290,12 @@ Particle settings should be defined after the corresponding `@#` tag using the s
 
 EvtGen may be used to generate decays allowing for non-phasespace decay models.
 
-* EvtGen must be compiled with all external generators included (Pythia, PHOTOS, Tauola)
-  * This can be achieved by running the EvtGen
-  [setup script](http://evtgen.hepforge.org/git?p=evtgen.git;a=blob_plain;f=setupEvtGen.sh;hb=HEAD)
-  * Note the manual step to set the required environment variables after installation
-* To compile RapidSim against EvtGen the environment variable EVTGEN_ROOT must be set
-* At present, all identical particles must decay into the same mode
+* The pixi environment provides EvtGen (with Pythia, PHOTOS and Tauola
+  externals) automatically — no manual setup is required.
+* Enable it for a specific decay by setting `useEvtGen : TRUE` in the
+  `.config` file (see the global settings above). PHOTOS final-state radiation
+  is enabled with `evtGenUsePHOTOS : TRUE`.
+* At present, all identical particles must decay into the same mode.
 
 ## TODO
 
