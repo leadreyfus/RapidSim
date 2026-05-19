@@ -101,7 +101,7 @@ Particle settings should be defined after the corresponding `@#` tag using the s
 * `energy`:
   * Sets the pp collision energy (in TeV) used to get the correct parent 
     kinematics
-  * Supported: `7`, `8`, `13` and `14`
+  * Supported: `7`, `8`, `13`, `13.6` and `14`
   * more types may be added in $RAPIDSIM_ROOT/rootfiles/fonll or $RAPIDSIM_CONFIG/rootfiles/fonll
 
 * `parent`:
