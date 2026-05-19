@@ -1,1 +1,12 @@
-build
+
+# pixi
+.pixi/
+
+# build outputs
+.build/
+build/
+build-*/
+
+# editor / OS
+.DS_Store
+*.swp
